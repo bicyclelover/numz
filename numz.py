@@ -5,6 +5,9 @@ Created on Sun Jan  2 14:48:35 2022
 @author: james
 """
 import random
+
+class numzv2:
+    pass
 class numz_game:
     def __init__(self):
         self.pieces = ['r1','b1','r2','b2','r3','b3']
@@ -117,7 +120,7 @@ def losing_agent(game_board):
             return i
         else:
             game_copy = game_board
-    return random.choice(game_board.valid_moves())
+    
     
 
         
@@ -159,9 +162,12 @@ def return_game(agent_1, agent_2):
 def play_n_moves(n, game_board):
     counter = 0
     while counter<n:
+
+
         moves = game_board.valid_moves
     
-
+def test_github():
+    print ("will this be uploaded")
 if __name__ == "__main__":
     print(play_n_games(10,winning_agent, losing_agent))
     
