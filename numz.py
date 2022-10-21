@@ -39,7 +39,8 @@ class numz_game:
                 print("red wins!")
             if i == self.blue_pieces or i == self.blue_pieces.reverse():
                 print("blue wins!")
-        
+    def what_will_happen_here():
+        print('oh my')
         
 
         
