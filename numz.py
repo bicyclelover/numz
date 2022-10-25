@@ -5,9 +5,13 @@ Created on Sun Jan  2 14:48:35 2022
 @author: james
 """
 import random
+import matplotlib.pyplot as plt
 
-class numzv2:
-    pass
+# class numzv2:
+#     def __init__(self):
+        #What are the game board requirements
+    
+
 class numz_game:
     def __init__(self):
         self.pieces = ['r1','b1','r2','b2','r3','b3']
