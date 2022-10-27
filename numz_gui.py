@@ -46,16 +46,16 @@ initiating_window = pg.transform.scale(initiating_window, (width, height + 100))
 def game_initiating_window():
     screen.blit(initiating_window, (0, 0))
     pg.display.update()
-    time.sleep(10)
+    time.sleep(3)
     screen.fill(white)
     pg.draw.line(screen , line_colour, (width/3, 0), (width/3, height), 7)
     pg.draw.line(screen, line_colour, (2*width/3, 0), (2*width/3, height), 7)
     pg.draw.line(screen, line_colour, (0, height/3), (width,height/3),7)
     pg.draw.line(screen, line_colour, (0,2*height/3), (width,2*height/3), 7)
     
-# game_initiating_window()
+game_initiating_window()
 
-# def draw_piece():
+
     
 game_board = numz.numz_game()
 
@@ -64,21 +64,105 @@ def get_image(piece):
     index = image_names.index(piece)
     return images[index]
     
+def draw_piece(row, col):
+    piece = game_board.pieces[game_board.move_number %6]
+    print(game_board.move_number)
+    piece_image = get_image(piece)
+    global board
+    
+    # for the first row, the image
+    # should be pasted at a x coordinate
+    # of 30 from the left margin
+    if row == 1:
+        posx = 30
+        
+    # for the second row, the image
+    # should be pasted at a x coordinate
+    # of 30 from the game line    
+    if row == 2:
+
+        # margin or width / 3 + 30 from
+        # the left margin of the window
+        posx = width / 3 + 30
+        
+    if row == 3:
+        posx = width / 3 * 2 + 30
+
+    if col == 1:
+        posy = 30
+        
+    if col == 2:
+        posy = height / 3 + 30
+    
+    if col == 3:
+        posy = height / 3 * 2 + 30
+        
+    # setting up the required board
+    # value to display
+    board[row-1][col-1] = piece
+    
+
+    screen.blit(piece_image, (posy, posx))
+    pg.display.update()
+
+  
+def user_click():
+    # get coordinates of mouse click
+    x, y = pg.mouse.get_pos()
+    print(x)
+
+    # get column of mouse click (1-3)
+    if(x<width / 3):
+        col = 1
+    
+    elif (x<width / 3 * 2):
+        col = 2
+    
+    elif(x<width):
+        col = 3
+    
+    else:
+        col = None
+
+    # get row of mouse click (1-3)
+    if(y<height / 3):
+        row = 1
+    
+    elif (y<height / 3 * 2):
+        row = 2
+    
+    elif(y<height):
+        row = 3
+    
+    else:
+        row = None
+   
+    
+    # after getting the row and col,
+    # we need to draw the images at
+    # the desired positions
+    if(game_board.board[row-1][col-1] ==0):
+        draw_piece(row, col)
+        game_board.play_piece(row-1, col-1)
+        if game_board.check_winning():
+            print(f"Player number{game_board.move_number%2} won!")
+            
+        
 
 
-# while(True):
-#     for event in pg.event.get():
+while(True):
+    for event in pg.event.get():
 
-#         if event.type == QUIT:
-#             pg.quit()
-#             sys.exit()
-#         # elif event.type == MOUSEBUTTONDOWN:
-#         #     print(event)
-#         #     user_click()
-#         #     if(winner or draw):
-#         #         reset_game()
-#     pg.display.update()
-#     CLOCK.tick(fps)
+        if event.type == QUIT:
+            pg.quit()
+            sys.exit()
+        elif event.type == MOUSEBUTTONDOWN:
+            print(event)
+            user_click()
+            # if(winner or draw):
+                # reset_game()
+    pg.display.update()
+    CLOCK.tick(fps)
 
     
 

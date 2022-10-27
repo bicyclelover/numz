@@ -27,6 +27,7 @@ class numz_game:
         self.red_backwards = ['r3', 'r2', 'r1']
         self.blue_pieces = ['b1', 'b2', 'b3']
         self.blue_backwards = ['b3', 'b2', 'b1']
+        self.next_piece = self.pieces[self.move_number%6]
                           
         
     def __str__(self):
@@ -34,7 +35,7 @@ class numz_game:
         return f"next piece to play is:  {piece} /n current configuration is: /n {self.board}"
         
     def play_piece(self,x,y):
-        piece = self.pieces[self.move_number % 6]
+        piece = self.pieces[self.move_number%6]
         position = [x,y]
         self.board[x][y] = piece
         if self.move_number > 5:
