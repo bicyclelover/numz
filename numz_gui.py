@@ -11,6 +11,7 @@ import sys
 import time
 from pygame.locals import *
 import os
+import copy
 
 #define board size
 width = 400
@@ -24,6 +25,7 @@ pg.init()
 #set fps
 fps = 30
 #set up a clock to track time
+computer_turn = False
 
 CLOCK = pg.time.Clock()
 
@@ -33,6 +35,8 @@ pg.display.set_caption("Play Numz")
 images = []
 image_names = []
 image_dir = 'images'
+blank = pg.image.load('blank.png')
+blank = pg.transform.scale(blank, (80,80))
 for image in os.listdir(image_dir):
     image_names.append(image)
     pg_image = pg.image.load(os.path.join(image_dir, image))
@@ -65,6 +69,10 @@ def get_image(piece):
     return images[index]
     
 def draw_piece(row, col):
+    if game_board.move_number > 5:
+        old_position = game_board.piece_positions[game_board.move_number %6]
+        remove_piece(old_position[0], old_position[1])
+        print(game_board.piece_positions)
     piece = game_board.pieces[game_board.move_number %6]
     print(game_board.move_number)
     piece_image = get_image(piece)
@@ -144,25 +152,64 @@ def user_click():
     if(game_board.board[row-1][col-1] ==0):
         draw_piece(row, col)
         game_board.play_piece(row-1, col-1)
+        global computer_turn 
+        computer_turn = True
+        print(game_board.piece_positions)
         if game_board.check_winning():
             print(f"Player number{game_board.move_number%2} won!")
             
-        
+def remove_piece(row, col):
+    left = col*width/3+30
+    top = row*height/3+30
+    # screen.blit(pg.Rect(), dest)
+    pg.draw.rect(screen, (255,255,255), pg.Rect(left, top, 80,80))
+    
+    
+    pass     
+
 
 
 while(True):
-    for event in pg.event.get():
+    
 
-        if event.type == QUIT:
+    if computer_turn:
+        time.sleep(.1)
+        move = numz.winning_agent(game_board)
+        draw_piece(move[0]+1, move[1]+1)
+        game_board.play_piece(move[0], move[1])
+        computer_turn = False
+        if game_board.check_winning():
+            print('winner')
             pg.quit()
             sys.exit()
-        elif event.type == MOUSEBUTTONDOWN:
-            print(event)
-            user_click()
+            break
+    else:
+        time.sleep(.1)
+        move = numz.losing_agent(game_board)
+        draw_piece(move[0]+1, move[1]+1)
+        game_board.play_piece(move[0], move[1])
+        computer_turn = True
+        if game_board.check_winning():
+            print('loser won')
+            pg.quit()
+            sys.exit()
+            break
+            
+    # else:    
+    #     for event in pg.event.get():
+    
+    #         if event.type == QUIT:
+    #             pg.quit()
+    #             sys.exit()
+    #         elif event.type == MOUSEBUTTONDOWN:
+    #             print(event)
+    #             user_click()
             # if(winner or draw):
                 # reset_game()
     pg.display.update()
     CLOCK.tick(fps)
+    
+
 
     
 

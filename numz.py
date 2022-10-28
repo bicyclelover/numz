@@ -6,6 +6,8 @@ Created on Sun Jan  2 14:48:35 2022
 """
 import random
 import matplotlib.pyplot as plt
+import copy
+import time
 
 # class numzv2:
 #     def __init__(self):
@@ -15,6 +17,7 @@ import matplotlib.pyplot as plt
 class numz_game:
     def __init__(self):
         self.pieces = ['r1','b1','r2','b2','r3','b3']
+        self.player_one_turn = True
         self.board = [[0,0,0],[0,0,0],[0,0,0]]
         self.move_number = 0
         self.piece_positions = [[4,4] for i in range(6)]
@@ -28,6 +31,7 @@ class numz_game:
         self.blue_pieces = ['b1', 'b2', 'b3']
         self.blue_backwards = ['b3', 'b2', 'b1']
         self.next_piece = self.pieces[self.move_number%6]
+
                           
         
     def __str__(self):
@@ -108,23 +112,26 @@ def random_agent(game_board):
     return random.choice(game_board.valid_moves())
 
 def winning_agent(game_board):
-    game_copy = game_board
+    game_copy = copy.deepcopy(game_board)
     for i in game_board.valid_moves():
         game_copy.play_piece(i[0],i[1])
         if game_copy.check_winning():
+
             return i
         else:
-            game_copy = game_board
+            game_copy = copy.deepcopy(game_board)
     return random.choice(game_board.valid_moves())
 
 def losing_agent(game_board):
-    game_copy = game_board
+    game_copy = copy.deepcopy(game_board)
     for i in game_board.valid_moves():
         game_copy.play_piece(i[0],i[1])
         if not game_copy.check_winning():
+
             return i
         else:
-            game_copy = game_board
+            game_copy = copy.deepcopy(game_board)
+    return random.choice(game_board.valid_moves())
     
     
 
@@ -133,13 +140,24 @@ def losing_agent(game_board):
 
 def play_game(agent_1, agent_2):
     players = [agent_1, agent_2]
-    move_number = 0
+
     game_board = numz_game()
     while  not game_board.check_winning():
-        move = players[move_number%2](game_board)
-        game_board.play_piece(move[0], move[1])
-        move_number+=1
-    return game_board.red_wins()
+        # print(game_board.move_number)
+
+        if game_board.player_one_turn:
+            move = players[0](game_board)
+            game_board.play_piece(move[0], move[1])
+            game_board.player_one_turn = False
+            if game_board.check_winning():
+                return 1
+        else:
+            move = players[1](game_board)
+            game_board.play_piece(move[0], move[1])
+            game_board.player_one_turn = True
+
+
+    return 0
     print(f'player {move_number%2} lost')
     print (game_board.board)
     return game_board.red_wins()
@@ -150,7 +168,9 @@ def play_n_games(n, agent_0, agent_1):
     player_0_wins = 0
     counter = 0
     while counter < n:
+        #print(f"game number: {counter}")
         player_0_wins += play_game(agent_0,agent_1)
+        
         counter += 1
     return player_0_wins
 
@@ -174,7 +194,7 @@ def play_n_moves(n, game_board):
 def test_github():
     print ("will this be uploaded")
 if __name__ == "__main__":
-    print(play_n_games(10,winning_agent, losing_agent))
+    print(play_n_games(1000,winning_agent, random_agent))
     
     
     
