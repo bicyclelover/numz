@@ -5,7 +5,7 @@ Created on Sun Jan  2 14:48:35 2022
 @author: james
 """
 import random
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import copy
 import time
 
